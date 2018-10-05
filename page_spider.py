@@ -1,10 +1,20 @@
 import os
 import argparse
+from utilities import url_utilities as url_utils
 
 
 def main(database: str, url_list_file: str):
+    big_word_list = []
     print("We are gonna work with: " + database + " DB")
     print("We are gonna scan: " + url_list_file + " URL file")
+    urls = url_utils.load_urls_from_file(url_list_file)
+    for url in urls:
+        print("reading: " + url)
+        page_content = url_utils.load_page(url=url)  # Using the load_page function in url_ulitiliesi
+                                                     # to open the url contents and decode using utf-8
+        words = url_utils.scrape_page(page_content)  #filtering out numbers, single letter words etc
+        big_word_list.extend(words) #Note: append adds an object, extend adds an iterable object i.e. list
+
 
 
 if __name__ == "__main__":
