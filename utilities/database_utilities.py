@@ -13,5 +13,17 @@ def create_database(database_path: str):
 
 
 def save_words_to_database(database_path: str, word_list: list):
-    # TODO: save words to db
-    pass
+    connection = lite.connect(database_path)
+    with connection:  # With is a substitute for the try/finally flow for assuring d/c after execution
+        cursor = connection.cursor()
+        for word in word_list:
+            # check to see if word is present. If present increment, else add
+            sql = "select count(word) from words WHERE word='" + word + "'"
+            cursor.execute(sql)
+            count = cursor.fetchone()[0]
+            if count > 0:
+                sql = "update words set usage_count=usage_count+1 where word='" + word + "'"
+            else:
+                sql = "insert into words(word) values ('" + word + "') "  # Inserting the current word into the words table, word col
+            cursor.execute(sql)
+    print("Changes made to DB")
